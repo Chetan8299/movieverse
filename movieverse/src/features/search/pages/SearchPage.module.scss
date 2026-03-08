@@ -6,8 +6,18 @@
   margin: 0 auto;
 }
 
-.searchBox {
-  margin-bottom: $spacing-xl;
+.prompt {
+  text-align: center;
+  color: var(--color-text-muted);
+  padding: $spacing-xl;
+  font-size: 0.95rem;
+}
+
+.queryHeading {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: $spacing-lg;
+  color: var(--color-text);
 }
 
 .input {

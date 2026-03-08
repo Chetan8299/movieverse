@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import toast from "react-hot-toast";
@@ -33,6 +33,9 @@ const initialMovieForm = {
   releaseDate: "",
   trailer: "",
   genre: "",
+  genres: [],
+  banner: "",
+  runtime: "",
   category: "movie",
 };
 
@@ -42,6 +45,8 @@ export default function AdminDashboardPage() {
   const [editingId, setEditingId] = useState(null);
   const [movieModalOpen, setMovieModalOpen] = useState(false);
   const [genreOptions, setGenreOptions] = useState([]);
+  const [genreDropdownOpen, setGenreDropdownOpen] = useState(false);
+  const genreDropdownRef = useRef(null);
 
   const dispatch = useDispatch();
   const { getGenres } = useTmdbApi();
@@ -62,6 +67,18 @@ export default function AdminDashboardPage() {
       .then((list) => setGenreOptions(Array.isArray(list) ? list : []))
       .catch(() => setGenreOptions([]));
   }, [movieModalOpen, movieForm.category, getGenres]);
+
+  useEffect(() => {
+    function handleClickOutside(e) {
+      if (genreDropdownRef.current && !genreDropdownRef.current.contains(e.target)) {
+        setGenreDropdownOpen(false);
+      }
+    }
+    if (genreDropdownOpen) {
+      document.addEventListener("click", handleClickOutside);
+      return () => document.removeEventListener("click", handleClickOutside);
+    }
+  }, [genreDropdownOpen]);
 
   const handleBan = (id) =>
     dispatch(banUser(id))
@@ -84,6 +101,7 @@ export default function AdminDashboardPage() {
 
   const closeMovieModal = () => {
     setMovieModalOpen(false);
+    setGenreDropdownOpen(false);
     setEditingId(null);
     setMovieForm(initialMovieForm);
   };
@@ -111,6 +129,7 @@ export default function AdminDashboardPage() {
 
   const handleEditMovie = (m) => {
     setEditingId(m._id);
+    const genresList = Array.isArray(m.genres) && m.genres.length > 0 ? m.genres : (m.genre ? [m.genre] : []);
     setMovieForm({
       title: m.title,
       poster: m.poster || "",
@@ -119,6 +138,9 @@ export default function AdminDashboardPage() {
       releaseDate: m.releaseDate || "",
       trailer: m.trailer || "",
       genre: m.genre || "",
+      genres: genresList,
+      banner: m.banner || "",
+      runtime: m.runtime != null && m.runtime !== "" ? String(m.runtime) : "",
       category: m.category || "movie",
     });
     setMovieModalOpen(true);
@@ -300,25 +322,87 @@ export default function AdminDashboardPage() {
                 </select>
               </div>
               <div className={styles.formRow}>
-                <label>Genre</label>
-                <select
-                  value={movieForm.genre}
+                <label>Banner / Backdrop URL</label>
+                <input
+                  value={movieForm.banner}
                   onChange={(e) =>
-                    setMovieForm((f) => ({ ...f, genre: e.target.value }))
+                    setMovieForm((f) => ({ ...f, banner: e.target.value }))
                   }
-                  className={styles.select}
-                >
-                  <option value="">Select genre</option>
-                  {genreOptions.map((g) => (
-                    <option key={g.id} value={g.name}>
-                      {g.name}
-                    </option>
-                  ))}
-                  {movieForm.genre &&
-                    !genreOptions.some((g) => g.name === movieForm.genre) && (
-                      <option value={movieForm.genre}>{movieForm.genre}</option>
-                    )}
-                </select>
+                  placeholder="https://..."
+                />
+              </div>
+              <div className={styles.formRow}>
+                <label>Runtime (minutes)</label>
+                <input
+                  type="number"
+                  min={0}
+                  max={9999}
+                  value={movieForm.runtime}
+                  onChange={(e) =>
+                    setMovieForm((f) => ({ ...f, runtime: e.target.value }))
+                  }
+                  placeholder="e.g. 120"
+                />
+              </div>
+              <div className={styles.formRow} ref={genreDropdownRef}>
+                <label>Genres</label>
+                <div className={styles.genreDropdown}>
+                  <button
+                    type="button"
+                    className={styles.genreDropdownTrigger}
+                    onClick={() => setGenreDropdownOpen((o) => !o)}
+                    aria-expanded={genreDropdownOpen}
+                    aria-haspopup="listbox"
+                  >
+                    {movieForm.genres.length > 0
+                      ? `${movieForm.genres.length} selected: ${movieForm.genres.slice(0, 3).join(", ")}${movieForm.genres.length > 3 ? "…" : ""}`
+                      : "Select genres"}
+                    <span className={styles.genreDropdownChevron} aria-hidden>▾</span>
+                  </button>
+                  {genreDropdownOpen && (
+                    <div
+                      className={styles.genreDropdownPanel}
+                      role="listbox"
+                      aria-multiselectable="true"
+                    >
+                      {genreOptions.map((g) => (
+                        <label key={g.id} className={styles.genreCheckItem}>
+                          <input
+                            type="checkbox"
+                            checked={movieForm.genres.includes(g.name)}
+                            onChange={(e) => {
+                              const checked = e.target.checked;
+                              setMovieForm((f) => ({
+                                ...f,
+                                genres: checked
+                                  ? [...f.genres, g.name]
+                                  : f.genres.filter((n) => n !== g.name),
+                              }));
+                            }}
+                          />
+                          <span>{g.name}</span>
+                        </label>
+                      ))}
+                      {movieForm.genres.filter(
+                        (name) => !genreOptions.some((g) => g.name === name)
+                      ).map((name) => (
+                        <label key={name} className={styles.genreCheckItem}>
+                          <input
+                            type="checkbox"
+                            checked
+                            onChange={() => {
+                              setMovieForm((f) => ({
+                                ...f,
+                                genres: f.genres.filter((n) => n !== name),
+                              }));
+                            }}
+                          />
+                          <span>{name}</span>
+                        </label>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
               <div className={styles.formActions}>
                 <Button type="submit" variant="primary">

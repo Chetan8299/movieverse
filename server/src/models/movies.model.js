@@ -8,6 +8,9 @@ const movieSchema = new mongoose.Schema({
     releaseDate: { type: String, default: "" },
     trailer: { type: String, default: "" },
     genre: { type: String, default: "" },
+    genres: { type: [String], default: [] },
+    banner: { type: String, default: "" },
+    runtime: { type: Number, default: null },
     category: { type: String, required: [true, "Category is required"] },
 }, { timestamps: true });
 

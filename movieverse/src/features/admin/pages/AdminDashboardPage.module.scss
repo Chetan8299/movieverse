@@ -137,7 +137,8 @@
   border-color: $color-link;
 }
 
-.formRow .select {
+.formRow .select,
+.formRow .selectMulti {
   width: 100%;
   max-width: 100%;
   min-width: 0;
@@ -152,19 +153,107 @@
   appearance: auto;
 }
 
-.formRow .select:focus {
+.formRow .select:focus,
+.formRow .selectMulti:focus {
   outline: none;
   border-color: $color-link;
 }
 
+.formRow .selectMulti {
+  min-height: 100px;
+}
+
+.hint {
+  display: block;
+  margin-top: 4px;
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+}
+
+.genreDropdown {
+  position: relative;
+  width: 100%;
+}
+
+.genreDropdownTrigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $spacing-sm;
+  padding: 0.5rem 0.65rem;
+  font-size: 1rem;
+  border-radius: 6px;
+  border: 1px solid var(--color-input-border);
+  background-color: var(--color-input-bg);
+  color: var(--color-text);
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+  min-height: 40px;
+  &:focus {
+    outline: none;
+    border-color: $color-link;
+  }
+}
+
+.genreDropdownChevron {
+  flex-shrink: 0;
+  opacity: 0.7;
+  transition: transform 0.2s;
+}
+
+.genreDropdownTrigger[aria-expanded="true"] .genreDropdownChevron {
+  transform: rotate(180deg);
+}
+
+.genreDropdownPanel {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin-top: 4px;
+  max-height: 220px;
+  overflow-y: auto;
+  border: 1px solid var(--color-input-border);
+  border-radius: 6px;
+  background: var(--color-surface-elevated);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  z-index: 10;
+  padding: $spacing-xs;
+}
+
+.genreCheckItem {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  padding: 0.4rem 0.5rem;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 0.95rem;
+  color: var(--color-text);
+  &:hover {
+    background: var(--color-surface);
+  }
+  input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    cursor: pointer;
+    accent-color: $color-link;
+  }
+}
+
 /* Ensure dropdown options are readable in dark mode (native select) */
-:global([data-theme="dark"]) .formRow .select {
+:global([data-theme="dark"]) .formRow .select,
+:global([data-theme="dark"]) .formRow .selectMulti {
   background-color: #252525;
   color: #e8e8e8;
   color-scheme: dark;
 }
 
-:global([data-theme="dark"]) .formRow .select option {
+:global([data-theme="dark"]) .formRow .select option,
+:global([data-theme="dark"]) .formRow .selectMulti option {
   background-color: #252525;
   color: #e8e8e8;
 }

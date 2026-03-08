@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import { useTmdbApi } from "../../movies/hooks/useTmdbApi";
 import { useDebounce } from "../hooks/useDebounce";
 import { apiClient } from "../../../shared/api";
@@ -9,9 +10,15 @@ import Loader from "../../../shared/components/Loader/Loader";
 import styles from "./SearchPage.module.scss";
 
 export default function SearchPage() {
-  const [query, setQuery] = useState("");
+  const [searchParams] = useSearchParams();
+  const qFromUrl = searchParams.get("q") || "";
+  const [query, setQuery] = useState(qFromUrl);
   const debouncedQuery = useDebounce(query, 300);
   const { searchMulti } = useTmdbApi();
+
+  useEffect(() => {
+    setQuery(qFromUrl);
+  }, [qFromUrl]);
   const [results, setResults] = useState({ movies: [], tv: [], people: [] });
   const [loading, setLoading] = useState(false);
 
@@ -55,50 +62,47 @@ export default function SearchPage() {
 
   return (
     <div className={styles.page}>
-      <div className={styles.searchBox}>
-        <input
-          type="search"
-          placeholder="Search movies, TV shows, people..."
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          className={styles.input}
-          autoFocus
-        />
-      </div>
-      {loading && <Loader />}
-      {!loading && debouncedQuery && !hasResults && (
-        <p className={styles.empty}>No results for &quot;{debouncedQuery}&quot;</p>
-      )}
-      {!loading && hasResults && (
+      {!debouncedQuery ? (
+        <p className={styles.prompt}>Use the search bar above to find movies and TV shows.</p>
+      ) : (
         <>
-          {results.movies.length > 0 && (
-            <>
-              <h2 className={styles.sectionTitle}>Movies</h2>
-              <div className={styles.grid}>
-                {results.movies.map((item) => (
-                  <MovieCard key={`m-${item.id}`} item={item} type="movie" />
-                ))}
-              </div>
-            </>
+          <h1 className={styles.queryHeading}>Results for &quot;{debouncedQuery}&quot;</h1>
+          {loading && <Loader />}
+          {!loading && !hasResults && (
+            <p className={styles.empty}>No results for &quot;{debouncedQuery}&quot;</p>
           )}
-          {results.tv.length > 0 && (
+          {!loading && hasResults && (
             <>
-              <h2 className={styles.sectionTitle}>TV Shows</h2>
-              <div className={styles.grid}>
-                {results.tv.map((item) => (
-                  <MovieCard key={`t-${item.id}`} item={item} type="tv" />
-                ))}
-              </div>
-            </>
-          )}
-          {results.people.length > 0 && (
-            <>
-              <h2 className={styles.sectionTitle}>People</h2>
-              <div className={styles.peopleGrid}>
-                {results.people.map((person) => (
-                  <PersonCard key={`p-${person.id}`} person={person} />
-                ))}
-              </div>
+              {results.movies.length > 0 && (
+                <>
+                  <h2 className={styles.sectionTitle}>Movies</h2>
+                  <div className={styles.grid}>
+                    {results.movies.map((item) => (
+                      <MovieCard key={`m-${item.id}`} item={item} type="movie" />
+                    ))}
+                  </div>
+                </>
+              )}
+              {results.tv.length > 0 && (
+                <>
+                  <h2 className={styles.sectionTitle}>TV Shows</h2>
+                  <div className={styles.grid}>
+                    {results.tv.map((item) => (
+                      <MovieCard key={`t-${item.id}`} item={item} type="tv" />
+                    ))}
+                  </div>
+                </>
+              )}
+              {results.people.length > 0 && (
+                <>
+                  <h2 className={styles.sectionTitle}>People</h2>
+                  <div className={styles.peopleGrid}>
+                    {results.people.map((person) => (
+                      <PersonCard key={`p-${person.id}`} person={person} />
+                    ))}
+                  </div>
+                </>
+              )}
             </>
           )}
         </>

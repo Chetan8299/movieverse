@@ -77,6 +77,16 @@ export function useTmdbApi() {
     return parseDetailResponse(response);
   }, []);
 
+  const getMovieCredits = useCallback(async (id) => {
+    const response = await tmdbClient.get(`/movie/${id}/credits`);
+    return parseDetailResponse(response);
+  }, []);
+
+  const getTvCredits = useCallback(async (id) => {
+    const response = await tmdbClient.get(`/tv/${id}/credits`);
+    return parseDetailResponse(response);
+  }, []);
+
   return {
     getTrending,
     getPopular,
@@ -91,5 +101,7 @@ export function useTmdbApi() {
     getDiscover,
     getMovieImages,
     getTvImages,
+    getMovieCredits,
+    getTvCredits,
   };
 }

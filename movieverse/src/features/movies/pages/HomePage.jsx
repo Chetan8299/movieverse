@@ -3,6 +3,7 @@ import { useTmdbApi } from "../hooks/useTmdbApi";
 import { useInfiniteScroll } from "../hooks/useInfiniteScroll";
 import MovieCard from "../components/MovieCard";
 import PersonCard from "../components/PersonCard";
+import Carousel from "../../../shared/components/Carousel/Carousel";
 import SkeletonCard from "../../../shared/components/SkeletonCard/SkeletonCard";
 import Loader from "../../../shared/components/Loader/Loader";
 import styles from "./HomePage.module.scss";
@@ -100,38 +101,26 @@ export default function HomePage() {
 
   return (
     <div className={styles.page}>
-      <section className={styles.hero}>
-        <h1 className={styles.sectionTitle}>Trending Movies</h1>
-        <div className={styles.grid}>
-          {trendingMovies.slice(0, 10).map((item) => (
-            <MovieCard key={`m-${item.id}`} item={item} type="movie" />
-          ))}
-        </div>
-      </section>
-      <section>
-        <h2 className={styles.sectionTitle}>Trending TV Shows</h2>
-        <div className={styles.grid}>
-          {trendingTv.slice(0, 10).map((item) => (
-            <MovieCard key={`t-${item.id}`} item={item} type="tv" />
-          ))}
-        </div>
-      </section>
-      <section>
-        <h2 className={styles.sectionTitle}>Popular Movies</h2>
-        <div className={styles.grid}>
-          {popularMovies.slice(0, 10).map((item) => (
-            <MovieCard key={`pm-${item.id}`} item={item} type="movie" />
-          ))}
-        </div>
-      </section>
-      <section>
-        <h2 className={styles.sectionTitle}>Popular TV Shows</h2>
-        <div className={styles.grid}>
-          {popularTv.slice(0, 10).map((item) => (
-            <MovieCard key={`pt-${item.id}`} item={item} type="tv" />
-          ))}
-        </div>
-      </section>
+      <Carousel title="Trending Movies">
+        {trendingMovies.slice(0, 16).map((item) => (
+          <MovieCard key={`m-${item.id}`} item={item} type="movie" />
+        ))}
+      </Carousel>
+      <Carousel title="Trending TV Shows">
+        {trendingTv.slice(0, 16).map((item) => (
+          <MovieCard key={`t-${item.id}`} item={item} type="tv" />
+        ))}
+      </Carousel>
+      <Carousel title="Popular Movies">
+        {popularMovies.slice(0, 16).map((item) => (
+          <MovieCard key={`pm-${item.id}`} item={item} type="movie" />
+        ))}
+      </Carousel>
+      <Carousel title="Popular TV Shows">
+        {popularTv.slice(0, 16).map((item) => (
+          <MovieCard key={`pt-${item.id}`} item={item} type="tv" />
+        ))}
+      </Carousel>
 
       <section>
         <h2 className={styles.sectionTitle}>Trending People</h2>

@@ -1,16 +1,14 @@
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { RiHeartFill, RiStarFill } from "react-icons/ri";
 import { TMDB_BASE_IMAGE } from "../../../shared/constants";
 import PlaceholderPoster from "../../../shared/components/PlaceholderPoster";
 import styles from "./MovieCard.module.scss";
 
-function HeartIcon({ className }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden>
-      <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-    </svg>
-  );
-}
+const truncate = (str, max = 100) => {
+  if (!str || typeof str !== "string") return "";
+  return str.length <= max ? str : str.slice(0, max).trim() + "…";
+};
 
 export default function MovieCard({ item, type = "movie" }) {
   const id = item?.id ?? item?.tmdbId;
@@ -20,6 +18,7 @@ export default function MovieCard({ item, type = "movie" }) {
     ? (String(posterPath).startsWith("http") ? posterPath : `${TMDB_BASE_IMAGE}/w342${posterPath}`)
     : null;
   const path = type === "tv" ? `/tv/${id}` : `/movie/${id}`;
+  const overview = item?.overview ? truncate(item.overview, 120) : "";
 
   const { items: favorites } = useSelector((state) => state.favorites);
   const isFavorite = favorites?.some(
@@ -43,16 +42,26 @@ export default function MovieCard({ item, type = "movie" }) {
         )}
         {isFavorite && (
           <span className={styles.favoriteBadge} title="In your favorites">
-            <HeartIcon className={styles.favoriteIcon} />
+            <RiHeartFill className={styles.favoriteIcon} />
           </span>
         )}
         {rating != null && (
           <span className={styles.rating} title="Rating">
-            ★ {rating}
+            <RiStarFill size={12} /> {rating}
           </span>
         )}
+        <div className={styles.hoverDetail}>
+          <span className={styles.hoverTitle}>{title}</span>
+          {rating != null && (
+            <span className={styles.hoverMeta}><RiStarFill size={12} /> {rating}</span>
+          )}
+          {overview && (
+            <p className={styles.hoverOverview}>{overview}</p>
+          )}
+          <span className={styles.hoverCta}>Details →</span>
+        </div>
       </div>
-      <p className={styles.title}>{title}</p>
+      {/* <p className={styles.title}>{title}</p> */}
     </Link>
   );
 }

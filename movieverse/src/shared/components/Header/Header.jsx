@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import { RiSearchLine, RiSunLine, RiMoonLine } from "react-icons/ri";
 import toast from "react-hot-toast";
 import { logoutUser } from "../../../features/auth/state/authSlice";
 import { useTheme } from "../../../shared/contexts/ThemeContext";
@@ -13,7 +14,9 @@ export default function Header() {
   const { user, isAuthenticated } = useSelector((state) => state.auth);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const dropdownRef = useRef(null);
+  const searchInputRef = useRef(null);
 
   useEffect(() => {
     function handleClickOutside(e) {
@@ -24,6 +27,22 @@ export default function Header() {
     document.addEventListener("click", handleClickOutside);
     return () => document.removeEventListener("click", handleClickOutside);
   }, []);
+
+  useEffect(() => {
+    if (location.pathname === "/search") {
+      const q = new URLSearchParams(location.search).get("q") || "";
+      setSearchQuery(q);
+    }
+  }, [location.pathname, location.search]);
+
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    const q = searchQuery.trim();
+    if (q) {
+      navigate(`/search?q=${encodeURIComponent(q)}`);
+      closeMobileMenu();
+    }
+  };
 
   const closeMobileMenu = () => setMobileMenuOpen(false);
 
@@ -38,8 +57,8 @@ export default function Header() {
 
   const navLinks = [
     { to: "/", label: "Home" },
-    { to: "/search", label: "Search" },
-    { to: "/browse", label: "Browse" },
+    { to: "/browse?type=movie", label: "Movies" },
+    { to: "/browse?type=tv", label: "TV" },
     ...(isAuthenticated
       ? [
           { to: "/favorites", label: "Favorites" },
@@ -53,6 +72,20 @@ export default function Header() {
       <Link to="/" className={styles.logo} onClick={closeMobileMenu}>
         Movieverse
       </Link>
+      <form className={styles.searchForm} onSubmit={handleSearchSubmit} role="search">
+        <input
+          ref={searchInputRef}
+          type="search"
+          className={styles.searchInput}
+          placeholder="Search movies & TV…"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          aria-label="Search movies and TV shows"
+        />
+        <button type="submit" className={styles.searchBtn} aria-label="Search">
+          <RiSearchLine size={18} />
+        </button>
+      </form>
 
       <button
         type="button"
@@ -67,16 +100,22 @@ export default function Header() {
       </button>
 
       <nav className={`${styles.nav} ${mobileMenuOpen ? styles.navOpen : ""}`}>
-        {navLinks.map(({ to, label }) => (
-          <Link
-            key={to}
-            to={to}
-            className={`${styles.navLink} ${location.pathname === to ? styles.active : ""}`}
-            onClick={closeMobileMenu}
-          >
-            {label}
-          </Link>
-        ))}
+        {navLinks.map(({ to, label }) => {
+          const isActive = to.startsWith("/browse")
+            ? (to.includes("type=movie") && location.pathname === "/browse" && new URLSearchParams(location.search).get("type") === "movie") ||
+              (to.includes("type=tv") && location.pathname === "/browse" && new URLSearchParams(location.search).get("type") === "tv")
+            : location.pathname === to;
+          return (
+            <Link
+              key={to}
+              to={to}
+              className={`${styles.navLink} ${isActive ? styles.active : ""}`}
+              onClick={closeMobileMenu}
+            >
+              {label}
+            </Link>
+          );
+        })}
         {!isAuthenticated && (
           <>
             <Link to="/login" className={`${styles.navLink} ${styles.navLinkAuth}`} onClick={closeMobileMenu}>
@@ -99,7 +138,7 @@ export default function Header() {
             title={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
             aria-label="Toggle theme"
           >
-            {theme === "dark" ? "☀️" : "🌙"}
+            {theme === "dark" ? <RiSunLine size={18} /> : <RiMoonLine size={18} />}
             <span> {theme === "dark" ? "Light" : "Dark"} mode</span>
           </button>
         </div>
@@ -113,7 +152,7 @@ export default function Header() {
           title={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
           aria-label="Toggle theme"
         >
-          {theme === "dark" ? "☀️" : "🌙"}
+          {theme === "dark" ? <RiSunLine size={20} /> : <RiMoonLine size={20} />}
         </button>
         {isAuthenticated ? (
           <div className={styles.userMenu} ref={dropdownRef}>

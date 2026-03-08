@@ -53,6 +53,25 @@ const createMovie = [
         .trim()
         .isLength({ max: 200 })
         .withMessage("Genre too long"),
+    body("genres")
+        .optional()
+        .isArray()
+        .withMessage("Genres must be an array"),
+    body("genres.*")
+        .optional()
+        .trim()
+        .isLength({ max: 100 })
+        .withMessage("Genre name too long"),
+    body("banner")
+        .optional()
+        .trim()
+        .isLength({ max: 1000 })
+        .withMessage("Banner URL too long"),
+    body("runtime")
+        .optional({ values: "null" })
+        .toInt()
+        .isInt({ min: 0, max: 9999 })
+        .withMessage("Runtime must be a number (minutes)"),
 ];
 
 const updateMovie = [
@@ -99,6 +118,25 @@ const updateMovie = [
         .trim()
         .isLength({ max: 200 })
         .withMessage("Genre too long"),
+    body("genres")
+        .optional()
+        .isArray()
+        .withMessage("Genres must be an array"),
+    body("genres.*")
+        .optional()
+        .trim()
+        .isLength({ max: 100 })
+        .withMessage("Genre name too long"),
+    body("banner")
+        .optional()
+        .trim()
+        .isLength({ max: 1000 })
+        .withMessage("Banner URL too long"),
+    body("runtime")
+        .optional({ values: "null" })
+        .toInt()
+        .isInt({ min: 0, max: 9999 })
+        .withMessage("Runtime must be a number (minutes)"),
 ];
 
 const getOrDeleteById = [mongooseId];

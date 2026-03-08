@@ -15,15 +15,10 @@ export default function BrowsePage() {
   const [searchParams] = useSearchParams();
   const typeFromUrl = searchParams.get("type") || "movie";
   const genreFromUrl = searchParams.get("genre") || "";
+  const type = typeFromUrl === "tv" ? "tv" : "movie";
 
   const { getDiscover, getGenres } = useTmdbApi();
-  const [type, setType] = useState(typeFromUrl);
   const [genreId, setGenreId] = useState(genreFromUrl);
-
-  const setTypeAndResetGenre = (newType) => {
-    setType(newType);
-    setGenreId("");
-  };
   const [genres, setGenres] = useState([]);
   const [items, setItems] = useState([]);
   const [page, setPage] = useState(1);
@@ -32,9 +27,8 @@ export default function BrowsePage() {
   const [loadingMore, setLoadingMore] = useState(false);
 
   useEffect(() => {
-    setType(typeFromUrl);
     setGenreId(genreFromUrl);
-  }, [typeFromUrl, genreFromUrl]);
+  }, [genreFromUrl]);
 
   useEffect(() => {
     getGenres(type).then(setGenres).catch(() => setGenres([]));
@@ -59,9 +53,12 @@ export default function BrowsePage() {
         let customList = Array.isArray(customRes?.data?.movies) ? customRes.data.movies : [];
         if (selectedGenreName) {
           const nameLower = selectedGenreName.trim().toLowerCase();
-          customList = customList.filter(
-            (m) => m.genre && String(m.genre).trim().toLowerCase() === nameLower
-          );
+          customList = customList.filter((m) => {
+            const genres = Array.isArray(m.genres) && m.genres.length > 0
+              ? m.genres
+              : (m.genre ? [m.genre] : []);
+            return genres.some((g) => String(g).trim().toLowerCase() === nameLower);
+          });
         }
         const customCards = customList.map(customMovieToCard).filter(Boolean);
         setItems([...customCards, ...discoverList]);
@@ -88,10 +85,12 @@ export default function BrowsePage() {
 
   const sentinelRef = useInfiniteScroll(loadMore, hasMore, loadingMore);
 
+  const pageTitle = type === "tv" ? "TV Shows" : "Movies";
+
   if (loading && items.length === 0) {
     return (
       <div className={styles.page}>
-        <h1 className={styles.title}>Browse {type === "tv" ? "TV Shows" : "Movies"}</h1>
+        <h1 className={styles.title}>{pageTitle}</h1>
         <div className={styles.grid}>
           {Array.from({ length: SKELETON_COUNT }).map((_, i) => (
             <SkeletonCard key={i} />
@@ -103,24 +102,7 @@ export default function BrowsePage() {
 
   return (
     <div className={styles.page}>
-      <h1 className={styles.title}>Browse {type === "tv" ? "TV Shows" : "Movies"}</h1>
-
-      <div className={styles.tabs}>
-        <button
-          type="button"
-          className={type === "movie" ? styles.tabActive : styles.tab}
-          onClick={() => setTypeAndResetGenre("movie")}
-        >
-          Movies
-        </button>
-        <button
-          type="button"
-          className={type === "tv" ? styles.tabActive : styles.tab}
-          onClick={() => setTypeAndResetGenre("tv")}
-        >
-          TV Shows
-        </button>
-      </div>
+      <h1 className={styles.title}>{pageTitle}</h1>
 
       {genres.length > 0 && (
         <div className={styles.genres}>
