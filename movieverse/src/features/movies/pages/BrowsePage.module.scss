@@ -1,0 +1,95 @@
+@use "../../../styles/variables" as *;
+@use "../../../styles/mixins" as *;
+
+.page {
+  padding-bottom: $spacing-xl;
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: $spacing-lg;
+  color: var(--color-text);
+}
+
+.tabs {
+  display: flex;
+  gap: $spacing-sm;
+  margin-bottom: $spacing-md;
+}
+
+.tab,
+.tabActive {
+  padding: 0.5rem 0.9rem;
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface-elevated);
+  color: var(--color-text);
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: background $transition-fast, border-color $transition-fast;
+}
+.tab:hover {
+  background: var(--color-surface);
+}
+.tabActive {
+  background: $color-link;
+  border-color: $color-link;
+  color: #fff;
+}
+
+.genres {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: $spacing-sm;
+  margin-bottom: $spacing-lg;
+}
+
+.genreLabel {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--color-text);
+  margin-right: $spacing-xs;
+}
+
+.genreBtn,
+.genreActive {
+  padding: 0.3rem 0.6rem;
+  border-radius: 6px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface-elevated);
+  color: var(--color-text);
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: background $transition-fast;
+}
+.genreBtn:hover {
+  background: var(--color-surface);
+}
+.genreActive {
+  background: rgba(100, 108, 255, 0.35);
+  border-color: $color-link;
+  color: #fff;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: $spacing-md;
+  @include respond-to(sm) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  @include respond-to(md) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  @include respond-to(lg) {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+.sentinel {
+  height: 1px;
+  visibility: hidden;
+}

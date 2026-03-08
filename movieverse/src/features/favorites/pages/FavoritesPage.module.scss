@@ -1,0 +1,41 @@
+@use "../../../styles/variables" as *;
+@use "../../../styles/mixins" as *;
+
+.page {
+  padding-bottom: $spacing-xl;
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: $spacing-lg;
+  color: var(--color-text);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: $spacing-md;
+}
+@media (min-width: 576px) {
+  .grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+@media (min-width: 768px) {
+  .grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+@media (min-width: 992px) {
+  .grid {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+.empty {
+  text-align: center;
+  color: var(--color-text-muted);
+  padding: $spacing-xl;
+  font-size: 0.95rem;
+}

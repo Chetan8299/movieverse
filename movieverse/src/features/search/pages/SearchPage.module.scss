@@ -1,0 +1,76 @@
+@use "../../../styles/variables" as *;
+@use "../../../styles/mixins" as *;
+
+.page {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.searchBox {
+  margin-bottom: $spacing-xl;
+}
+
+.input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  border-radius: 10px;
+  border: 1px solid var(--color-input-border);
+  background: var(--color-input-bg);
+  color: var(--color-text);
+}
+.input:focus {
+  outline: none;
+  border-color: $color-link;
+  box-shadow: 0 0 0 3px rgba(100, 108, 255, 0.15);
+}
+.input::placeholder {
+  color: var(--color-placeholder);
+}
+
+.sectionTitle {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: $spacing-lg 0 $spacing-sm;
+  color: var(--color-text);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: $spacing-md;
+}
+@media (min-width: 576px) {
+  .grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+@media (min-width: 768px) {
+  .grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.peopleGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: $spacing-md;
+  margin-bottom: $spacing-lg;
+}
+@media (min-width: 576px) {
+  .peopleGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+@media (min-width: 768px) {
+  .peopleGrid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.empty {
+  text-align: center;
+  color: var(--color-text-muted);
+  padding: $spacing-xl;
+  font-size: 0.95rem;
+}

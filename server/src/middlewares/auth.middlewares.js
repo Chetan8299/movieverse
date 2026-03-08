@@ -13,11 +13,12 @@ const authenticate = asyncHandler(async (req, res, next) => {
 
 const authorize = (roles) => {
     return asyncHandler(async (req, res, next) => {
-        if (!roles.includes(req.user.isAdmin)) {
-            return res.status(401).json({ message: "Unauthorized" });
+        const isAdmin = req.user && req.user.isAdmin === true;
+        if (roles.includes("admin") && !isAdmin) {
+            return res.status(403).json({ message: "Forbidden: admin access required" });
         }
         next();
-    })
-}
+    });
+};
 
 module.exports = { authenticate, authorize };

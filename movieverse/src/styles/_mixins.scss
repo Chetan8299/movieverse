@@ -1,0 +1,27 @@
+@use "variables" as *;
+
+@mixin respond-to($breakpoint) {
+  @if $breakpoint == "sm" {
+    @media (min-width: $breakpoint-sm) {
+      @content;
+    }
+  } @else if $breakpoint == "md" {
+    @media (min-width: $breakpoint-md) {
+      @content;
+    }
+  } @else if $breakpoint == "lg" {
+    @media (min-width: $breakpoint-lg) {
+      @content;
+    }
+  } @else if $breakpoint == "xl" {
+    @media (min-width: $breakpoint-xl) {
+      @content;
+    }
+  }
+}
+
+@mixin focus-visible {
+  &:focus-visible {
+    outline: 4px auto -webkit-focus-ring-color;
+  }
+}

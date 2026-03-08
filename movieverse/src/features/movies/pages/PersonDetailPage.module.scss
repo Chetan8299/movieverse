@@ -1,0 +1,92 @@
+@use "../../../styles/variables" as *;
+@use "../../../styles/mixins" as *;
+
+.page {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding-bottom: $spacing-xl;
+}
+
+.back {
+  display: inline-block;
+  margin-bottom: $spacing-md;
+  color: $color-link;
+  text-decoration: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.95rem;
+  &:hover { text-decoration: underline; }
+}
+
+.top {
+  display: grid;
+  gap: $spacing-lg;
+  margin-bottom: $spacing-xl;
+}
+@media (min-width: 768px) {
+  .top {
+    grid-template-columns: 280px 1fr;
+  }
+}
+
+.profileWrap {
+  width: 100%;
+  max-width: 280px;
+  aspect-ratio: 2/3;
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--color-surface);
+}
+.profile {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  color: var(--color-text-muted);
+}
+
+.info { }
+.name {
+  font-size: 1.75rem;
+  font-weight: 600;
+  margin: 0 0 $spacing-sm;
+  color: var(--color-text);
+}
+.bio {
+  font-size: 0.95rem;
+  line-height: 1.65;
+  color: var(--color-text-muted);
+  margin: 0;
+}
+
+.sectionTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: $spacing-md;
+  color: var(--color-text);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: $spacing-md;
+}
+@media (min-width: 576px) {
+  .grid { grid-template-columns: repeat(3, 1fr); }
+}
+@media (min-width: 768px) {
+  .grid { grid-template-columns: repeat(4, 1fr); }
+}
+
+.error {
+  color: var(--color-link);
+  margin-bottom: $spacing-md;
+}

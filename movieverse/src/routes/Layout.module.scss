@@ -1,0 +1,22 @@
+@use "../styles/variables" as *;
+@use "../styles/mixins" as *;
+
+.layout {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.main {
+  flex: 1;
+  padding: $spacing-lg $spacing-md $spacing-xl;
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+
+  @include respond-to(md) {
+    padding: $spacing-xl $spacing-xl $spacing-xl * 1.5;
+  }
+}

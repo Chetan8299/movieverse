@@ -1,0 +1,406 @@
+@use "../../../styles/variables" as *;
+@use "../../../styles/mixins" as *;
+
+.header {
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(8px);
+  padding: $spacing-sm $spacing-md;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $spacing-md;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  flex-wrap: wrap;
+
+  @media (min-width: $breakpoint-md) {
+    padding: $spacing-sm $spacing-lg;
+    flex-wrap: nowrap;
+  }
+}
+
+.logo {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #fff;
+  text-decoration: none;
+  letter-spacing: -0.02em;
+  flex-shrink: 0;
+  &:hover {
+    color: $color-link;
+  }
+
+  @media (min-width: $breakpoint-md) {
+    font-size: 1.35rem;
+  }
+}
+
+.hamburger {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-left: auto;
+  margin-right: $spacing-xs;
+  transition: background $transition-fast;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.15);
+  }
+
+  &[aria-expanded="true"] .hamburgerBar:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+  }
+  &[aria-expanded="true"] .hamburgerBar:nth-child(2) {
+    opacity: 0;
+  }
+  &[aria-expanded="true"] .hamburgerBar:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
+  }
+
+  @media (min-width: $breakpoint-md) {
+    display: none;
+  }
+}
+
+.hamburgerBar {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: #fff;
+  border-radius: 1px;
+  margin: 0 auto;
+  transition:
+    transform $transition-normal,
+    opacity $transition-fast;
+}
+
+.nav {
+  width: 100%;
+  order: 4;
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition:
+    max-height 0.3s ease,
+    opacity 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  background: rgba(0, 0, 0, 0.97);
+  // margin: (-$spacing-md) (-$spacing-md) 0 (-$spacing-md);
+  // padding: 0 $spacing-md $spacing-md;
+  border-radius: 0 0 8px 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+
+  &.navOpen {
+    max-height: 360px;
+    opacity: 1;
+    margin-top: -$spacing-md; /* cancel header flex gap so menu sits flush under header */
+  }
+
+  @media (min-width: $breakpoint-md) {
+    width: auto;
+    order: unset;
+    max-height: none;
+    opacity: 1;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: $spacing-md;
+    background: none;
+    margin: 0;
+    padding: 0;
+    border-radius: 0;
+  }
+}
+
+.navThemeWrap {
+  display: block;
+  padding: $spacing-sm $spacing-md;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  margin-top: $spacing-xs;
+
+  @media (min-width: $breakpoint-md) {
+    display: none;
+  }
+}
+
+.themeToggleInNav {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  width: 100%;
+  padding: $spacing-sm $spacing-md;
+  background: none;
+  border: none;
+  border-radius: 8px;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.95rem;
+  cursor: pointer;
+  text-align: left;
+  transition: background $transition-fast;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+}
+
+.navLink {
+  color: rgba(255, 255, 255, 0.85);
+  text-decoration: none;
+  font-size: 0.95rem;
+  padding: $spacing-sm $spacing-md;
+  border-radius: 6px;
+  transition:
+    color $transition-fast,
+    background $transition-fast;
+  display: block;
+
+  &:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.1);
+  }
+  &.active {
+    color: $color-link;
+    font-weight: $font-weight-medium;
+  }
+
+  @media (min-width: $breakpoint-md) {
+    padding: $spacing-xs $spacing-sm;
+    display: inline-block;
+  }
+}
+
+.navLinkAuth {
+  @media (min-width: $breakpoint-md) {
+    display: none !important;
+  }
+}
+
+.navLinkDesktop {
+  display: none;
+  @media (min-width: $breakpoint-md) {
+    display: inline-block;
+    color: rgba(255, 255, 255, 0.85);
+    text-decoration: none;
+    font-size: 0.95rem;
+    padding: $spacing-xs $spacing-sm;
+    border-radius: 6px;
+    &:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.1);
+    }
+    &.active {
+      color: $color-link;
+      font-weight: $font-weight-medium;
+    }
+  }
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  flex-shrink: 0;
+}
+
+.themeToggle {
+  padding: 0.35rem 0.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1.1rem;
+  line-height: 1;
+  &:hover {
+    background: rgba(255, 255, 255, 0.15);
+  }
+
+  @media (max-width: $breakpoint-md - 1px) {
+    display: none;
+  }
+}
+
+.userName {
+  max-width: 80px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  @media (min-width: $breakpoint-md) {
+    max-width: 140px;
+  }
+}
+
+.userMenu {
+  position: relative;
+}
+
+.userButton {
+  display: flex;
+  align-items: center;
+  gap: $spacing-xs;
+  padding: $spacing-xs $spacing-sm;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: 6px;
+  color: #fff;
+  cursor: pointer;
+  font-size: 0.9rem;
+  &:hover {
+    background: rgba(255, 255, 255, 0.15);
+  }
+}
+
+.dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: $spacing-xs;
+  min-width: 160px;
+  background: #1a1a1a;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  overflow: hidden;
+}
+
+.dropdownItem {
+  display: block;
+  width: 100%;
+  padding: $spacing-sm $spacing-md;
+  text-align: left;
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.9);
+  cursor: pointer;
+  font-size: 0.9rem;
+  text-decoration: none;
+  &:hover {
+    background: rgba(255, 255, 255, 0.08);
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  .header:not([data-theme="dark"]) {
+    background: rgba(255, 255, 255, 0.95);
+    border-bottom-color: rgba(0, 0, 0, 0.08);
+  }
+  .header:not([data-theme="dark"]) .logo {
+    color: #111;
+    &:hover {
+      color: $color-link;
+    }
+  }
+  .header:not([data-theme="dark"]) .navLink {
+    color: #333;
+    &:hover {
+      color: #111;
+      background: rgba(0, 0, 0, 0.06);
+    }
+    &.active {
+      color: $color-link;
+    }
+  }
+  .header:not([data-theme="dark"]) .userButton {
+    background: rgba(0, 0, 0, 0.06);
+    color: #111;
+    &:hover {
+      background: rgba(0, 0, 0, 0.1);
+    }
+  }
+  .header:not([data-theme="dark"]) .dropdown {
+    background: #fff;
+    border-color: rgba(0, 0, 0, 0.1);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  }
+  .header:not([data-theme="dark"]) .dropdownItem {
+    color: #333;
+    &:hover {
+      background: rgba(0, 0, 0, 0.05);
+    }
+  }
+}
+
+.header[data-theme="light"] {
+  background: rgba(255, 255, 255, 0.95);
+  border-bottom-color: rgba(0, 0, 0, 0.08);
+  .logo {
+    color: #111;
+    &:hover {
+      color: $color-link;
+    }
+  }
+  .hamburger {
+    background: rgba(0, 0, 0, 0.06);
+    &:hover {
+      background: rgba(0, 0, 0, 0.1);
+    }
+    .hamburgerBar {
+      background: #111;
+    }
+  }
+  .nav {
+    background: rgba(255, 255, 255, 0.98);
+    border-top-color: rgba(0, 0, 0, 0.08);
+  }
+  .navLink {
+    color: #333;
+    &:hover {
+      color: #111;
+      background: rgba(0, 0, 0, 0.06);
+    }
+    &.active {
+      color: $color-link;
+    }
+  }
+  .themeToggleInNav {
+    color: #333;
+    border-top-color: rgba(0, 0, 0, 0.08);
+    &:hover {
+      background: rgba(0, 0, 0, 0.06);
+    }
+  }
+  .userButton {
+    background: rgba(0, 0, 0, 0.06);
+    color: #111;
+    &:hover {
+      background: rgba(0, 0, 0, 0.1);
+    }
+  }
+  .dropdown {
+    background: #fff;
+    border-color: rgba(0, 0, 0, 0.1);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  }
+  .dropdownItem {
+    color: #333;
+    &:hover {
+      background: rgba(0, 0, 0, 0.05);
+    }
+  }
+  .themeToggle {
+    background: rgba(0, 0, 0, 0.06);
+    &:hover {
+      background: rgba(0, 0, 0, 0.1);
+    }
+  }
+  .navLinkDesktop {
+    color: #333;
+    &:hover {
+      color: #111;
+      background: rgba(0, 0, 0, 0.06);
+    }
+    &.active {
+      color: $color-link;
+    }
+  }
+}
