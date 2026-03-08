@@ -2,14 +2,14 @@ const asyncHandler = require("../utils/asynchandler");
 const jwt = require("jsonwebtoken");
 
 const authenticate = asyncHandler(async (req, res, next) => {
-    const token = req.cookies.token;
+    const token = req.cookies.token || (req.headers.authorization && req.headers.authorization.startsWith("Bearer ") && req.headers.authorization.slice(7));
     if (!token) {
         return res.status(401).json({ message: "Unauthorized" });
     }
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.user = decoded;
     next();
-})
+});
 
 const authorize = (roles) => {
     return asyncHandler(async (req, res, next) => {

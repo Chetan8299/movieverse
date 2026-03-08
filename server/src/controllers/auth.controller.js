@@ -25,7 +25,7 @@ const register = asyncHandler(async (req, res) => {
     const cookieOptions = {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
-        sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
         maxAge: 7 * 24 * 60 * 60 * 1000,
     };
     res.cookie("token", token, cookieOptions);
@@ -63,7 +63,7 @@ const login = asyncHandler(async (req, res) => {
     const cookieOptions = {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
-        sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
         maxAge: 7 * 24 * 60 * 60 * 1000,
     };
     res.cookie("token", token, cookieOptions);
@@ -77,9 +77,14 @@ const login = asyncHandler(async (req, res) => {
  * @access Public
  */
 const logout = asyncHandler(async (req, res) => {
-    res.clearCookie("token");
+    const clearOptions = { httpOnly: true };
+    if (process.env.NODE_ENV === "production") {
+        clearOptions.secure = true;
+        clearOptions.sameSite = "none";
+    }
+    res.clearCookie("token", clearOptions);
     res.status(200).json({ message: "Logout successful" });
-})
+});
 
 /**
  * @desc Get a user
