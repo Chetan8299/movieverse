@@ -22,13 +22,16 @@ export default function Header() {
   const dropdownRef = useRef(null);
   const searchInputRef = useRef(null);
 
+  // When debounced search text changes, update the URL so SearchPage shows new results (from any page or while on search).
   useEffect(() => {
-    if (location.pathname !== "/search") return;
-    const currentQ = new URLSearchParams(location.search).get("q") || "";
     const nextQ = debouncedSearchQuery.trim();
-    if (nextQ !== currentQ) {
-      navigate(nextQ ? `/search?q=${encodeURIComponent(nextQ)}` : "/search", { replace: true });
-    }
+    const currentQ =
+      location.pathname === "/search"
+        ? new URLSearchParams(location.search).get("q") || ""
+        : "";
+    if (nextQ === currentQ) return;
+    const target = nextQ ? `/search?q=${encodeURIComponent(nextQ)}` : "/search";
+    navigate(target, { replace: location.pathname === "/search" });
   }, [debouncedSearchQuery, location.pathname, location.search, navigate]);
 
   useEffect(() => {
@@ -85,7 +88,11 @@ export default function Header() {
       <Link to="/" className={styles.logo} onClick={closeMobileMenu}>
         Movieverse
       </Link>
-      <form className={styles.searchForm} onSubmit={handleSearchSubmit} role="search">
+      <form
+        className={styles.searchForm}
+        onSubmit={handleSearchSubmit}
+        role="search"
+      >
         <input
           ref={searchInputRef}
           type="search"
@@ -115,8 +122,12 @@ export default function Header() {
       <nav className={`${styles.nav} ${mobileMenuOpen ? styles.navOpen : ""}`}>
         {navLinks.map(({ to, label }) => {
           const isActive = to.startsWith("/browse")
-            ? (to.includes("type=movie") && location.pathname === "/browse" && new URLSearchParams(location.search).get("type") === "movie") ||
-              (to.includes("type=tv") && location.pathname === "/browse" && new URLSearchParams(location.search).get("type") === "tv")
+            ? (to.includes("type=movie") &&
+                location.pathname === "/browse" &&
+                new URLSearchParams(location.search).get("type") === "movie") ||
+              (to.includes("type=tv") &&
+                location.pathname === "/browse" &&
+                new URLSearchParams(location.search).get("type") === "tv")
             : location.pathname === to;
           return (
             <Link
@@ -131,7 +142,11 @@ export default function Header() {
         })}
         {!isAuthenticated && (
           <>
-            <Link to="/login" className={`${styles.navLink} ${styles.navLinkAuth}`} onClick={closeMobileMenu}>
+            <Link
+              to="/login"
+              className={`${styles.navLink} ${styles.navLinkAuth}`}
+              onClick={closeMobileMenu}
+            >
               Log in
             </Link>
             <Link
@@ -147,11 +162,20 @@ export default function Header() {
           <button
             type="button"
             className={styles.themeToggleInNav}
-            onClick={() => { toggleTheme(); closeMobileMenu(); }}
-            title={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+            onClick={() => {
+              toggleTheme();
+              closeMobileMenu();
+            }}
+            title={
+              theme === "dark" ? "Switch to light mode" : "Switch to dark mode"
+            }
             aria-label="Toggle theme"
           >
-            {theme === "dark" ? <RiSunLine size={18} /> : <RiMoonLine size={18} />}
+            {theme === "dark" ? (
+              <RiSunLine size={18} />
+            ) : (
+              <RiMoonLine size={18} />
+            )}
             <span> {theme === "dark" ? "Light" : "Dark"} mode</span>
           </button>
         </div>
@@ -162,10 +186,16 @@ export default function Header() {
           type="button"
           className={styles.themeToggle}
           onClick={toggleTheme}
-          title={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+          title={
+            theme === "dark" ? "Switch to light mode" : "Switch to dark mode"
+          }
           aria-label="Toggle theme"
         >
-          {theme === "dark" ? <RiSunLine size={20} /> : <RiMoonLine size={20} />}
+          {theme === "dark" ? (
+            <RiSunLine size={20} />
+          ) : (
+            <RiMoonLine size={20} />
+          )}
         </button>
         {isAuthenticated ? (
           <div className={styles.userMenu} ref={dropdownRef}>
@@ -189,7 +219,11 @@ export default function Header() {
                     Admin
                   </Link>
                 )}
-                <button type="button" className={styles.dropdownItem} onClick={handleLogout}>
+                <button
+                  type="button"
+                  className={styles.dropdownItem}
+                  onClick={handleLogout}
+                >
                   Log out
                 </button>
               </div>
