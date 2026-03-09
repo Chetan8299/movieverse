@@ -17,6 +17,7 @@ const watchHistorySchema = new mongoose.Schema({
     },
     title: { type: String, default: "" },
     poster: { type: String, default: "" },
+    overview: { type: String, default: "" },
     watchedAt: {
         type: Date,
         default: Date.now,

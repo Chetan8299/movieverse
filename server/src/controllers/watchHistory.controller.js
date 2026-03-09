@@ -20,7 +20,7 @@ const getWatchHistory = asyncHandler(async (req, res) => {
  * @access Private
  */
 const addWatchHistory = asyncHandler(async (req, res) => {
-    const { tmdbId, type = "movie", title = "", poster = "" } = req.body;
+    const { tmdbId, type = "movie", title = "", poster = "", overview = "" } = req.body;
     if (!tmdbId) {
         return res.status(400).json({ message: "tmdbId is required" });
     }
@@ -30,6 +30,7 @@ const addWatchHistory = asyncHandler(async (req, res) => {
         type: type === "tv" ? "tv" : "movie",
         title,
         poster,
+        overview,
         watchedAt: new Date(),
     });
     res.status(201).json({ message: "Added to watch history", entry });

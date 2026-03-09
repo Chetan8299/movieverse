@@ -22,16 +22,14 @@ export default function Header() {
   const dropdownRef = useRef(null);
   const searchInputRef = useRef(null);
 
-  // When debounced search text changes, update the URL so SearchPage shows new results (from any page or while on search).
+  // When on the search page and debounced search text changes, update the URL so results update. Do not run when on other pages (so clicking Home/Movies/TV etc. works).
   useEffect(() => {
+    if (location.pathname !== "/search") return;
     const nextQ = debouncedSearchQuery.trim();
-    const currentQ =
-      location.pathname === "/search"
-        ? new URLSearchParams(location.search).get("q") || ""
-        : "";
+    const currentQ = new URLSearchParams(location.search).get("q") || "";
     if (nextQ === currentQ) return;
     const target = nextQ ? `/search?q=${encodeURIComponent(nextQ)}` : "/search";
-    navigate(target, { replace: location.pathname === "/search" });
+    navigate(target, { replace: true });
   }, [debouncedSearchQuery, location.pathname, location.search, navigate]);
 
   useEffect(() => {

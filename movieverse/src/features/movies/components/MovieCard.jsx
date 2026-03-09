@@ -17,18 +17,20 @@ export default function MovieCard({ item, type = "movie" }) {
   const posterUrl = posterPath
     ? (String(posterPath).startsWith("http") ? posterPath : `${TMDB_BASE_IMAGE}/w342${posterPath}`)
     : null;
-  const path = type === "tv" ? `/tv/${id}` : `/movie/${id}`;
+  const mediaType = item?.media_type ?? type;
+  const linkType = mediaType === "tv" ? "tv" : "movie";
+  const path = id != null && id !== "" ? `/${linkType}/${String(id)}` : null;
   const overview = item?.overview ? truncate(item.overview, 120) : "";
 
   const { items: favorites } = useSelector((state) => state.favorites);
   const isFavorite = favorites?.some(
-    (f) => String(f.tmdbId) === String(id) && f.type === type
+    (f) => String(f.tmdbId) === String(id) && f.type === (item?.media_type ?? type)
   );
 
   const rating = item?.vote_average != null ? Number(item.vote_average).toFixed(1) : null;
 
-  return (
-    <Link to={path} className={styles.card} state={{ type }}>
+  const cardContent = (
+    <>
       <div className={styles.posterWrap}>
         {posterUrl ? (
           <img
@@ -61,7 +63,15 @@ export default function MovieCard({ item, type = "movie" }) {
           <span className={styles.hoverCta}>Details →</span>
         </div>
       </div>
-      {/* <p className={styles.title}>{title}</p> */}
-    </Link>
+    </>
   );
+
+  if (path) {
+    return (
+      <Link to={path} className={styles.card} state={{ type: linkType }}>
+        {cardContent}
+      </Link>
+    );
+  }
+  return <div className={styles.card}>{cardContent}</div>;
 }

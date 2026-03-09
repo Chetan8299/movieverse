@@ -27,8 +27,12 @@ export default function FavoritesPage() {
               key={`${fav.type}-${fav.tmdbId}`}
               item={{
                 id: fav.tmdbId,
+                tmdbId: fav.tmdbId,
                 title: fav.title,
                 poster: fav.poster,
+                poster_path: fav.poster,
+                overview: fav.overview || "",
+                media_type: fav.type,
               }}
               type={fav.type}
             />

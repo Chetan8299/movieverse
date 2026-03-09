@@ -107,6 +107,7 @@ export default function MovieDetailPage() {
         type,
         title: detail.title ?? detail.name,
         poster: detail.poster_path ?? "",
+        overview: detail.overview ?? "",
       })
     );
   }, [id, type, detail, isAuthenticated, dispatch]);
@@ -163,6 +164,7 @@ export default function MovieDetailPage() {
           type,
           title,
           poster: posterPath ?? "",
+          overview: detail?.overview ?? "",
         })
       );
     }

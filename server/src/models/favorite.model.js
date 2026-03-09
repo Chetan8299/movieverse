@@ -17,6 +17,7 @@ const favoriteSchema = new mongoose.Schema({
     },
     title: { type: String, default: "" },
     poster: { type: String, default: "" },
+    overview: { type: String, default: "" },
 }, { timestamps: true });
 
 favoriteSchema.index({ user: 1, tmdbId: 1, type: 1 }, { unique: true });

@@ -15,9 +15,9 @@ export const fetchFavorites = createAsyncThunk(
 
 export const addFavorite = createAsyncThunk(
   "favorites/add",
-  async ({ tmdbId, type = "movie", title = "", poster = "" }, { rejectWithValue }) => {
+  async ({ tmdbId, type = "movie", title = "", poster = "", overview = "" }, { rejectWithValue }) => {
     try {
-      const { data } = await apiClient.post("/favorites", { tmdbId, type, title, poster });
+      const { data } = await apiClient.post("/favorites", { tmdbId, type, title, poster, overview });
       return data.favorite;
     } catch (err) {
       return rejectWithValue(err.response?.data?.message || "Failed to add favorite");

@@ -27,8 +27,12 @@ export default function WatchHistoryPage() {
               key={`${entry.type}-${entry.tmdbId}-${entry.watchedAt}`}
               item={{
                 id: entry.tmdbId,
+                tmdbId: entry.tmdbId,
                 title: entry.title,
                 poster: entry.poster,
+                poster_path: entry.poster,
+                overview: entry.overview || "",
+                media_type: entry.type,
               }}
               type={entry.type}
             />

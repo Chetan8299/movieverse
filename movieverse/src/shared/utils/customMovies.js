@@ -9,6 +9,7 @@ export function customMovieToCard(m) {
     title: m.title || "Untitled",
     poster: m.poster || "",
     poster_path: m.poster || null,
+    overview: m.description || "",
     media_type: m.category === "tv" ? "tv" : "movie",
     vote_average: null,
   };

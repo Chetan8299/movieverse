@@ -15,9 +15,9 @@ export const fetchWatchHistory = createAsyncThunk(
 
 export const addWatchHistory = createAsyncThunk(
   "watchHistory/add",
-  async ({ tmdbId, type = "movie", title = "", poster = "" }, { rejectWithValue }) => {
+  async ({ tmdbId, type = "movie", title = "", poster = "", overview = "" }, { rejectWithValue }) => {
     try {
-      const { data } = await apiClient.post("/watch-history", { tmdbId, type, title, poster });
+      const { data } = await apiClient.post("/watch-history", { tmdbId, type, title, poster, overview });
       return data.entry;
     } catch (err) {
       return rejectWithValue(err.response?.data?.message || "Failed to add to history");
