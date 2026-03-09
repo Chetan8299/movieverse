@@ -3,9 +3,12 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { RiSearchLine, RiSunLine, RiMoonLine } from "react-icons/ri";
 import toast from "react-hot-toast";
+import { useDebounce } from "../../../features/search/hooks/useDebounce";
 import { logoutUser } from "../../../features/auth/state/authSlice";
 import { useTheme } from "../../../shared/contexts/ThemeContext";
 import styles from "./Header.module.scss";
+
+const SEARCH_DEBOUNCE_MS = 400;
 
 export default function Header() {
   const location = useLocation();
@@ -15,8 +18,18 @@ export default function Header() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const debouncedSearchQuery = useDebounce(searchQuery, SEARCH_DEBOUNCE_MS);
   const dropdownRef = useRef(null);
   const searchInputRef = useRef(null);
+
+  useEffect(() => {
+    if (location.pathname !== "/search") return;
+    const currentQ = new URLSearchParams(location.search).get("q") || "";
+    const nextQ = debouncedSearchQuery.trim();
+    if (nextQ !== currentQ) {
+      navigate(nextQ ? `/search?q=${encodeURIComponent(nextQ)}` : "/search", { replace: true });
+    }
+  }, [debouncedSearchQuery, location.pathname, location.search, navigate]);
 
   useEffect(() => {
     function handleClickOutside(e) {
